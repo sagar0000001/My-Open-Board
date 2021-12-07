@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <i class="far fa-square tool"></i>
+    <i class="fas fa-arrows-alt-h tool"></i>
+    <!-- <h1>Canvas</h1> -->
+    <canvas></canvas>
+</body>
+<script>
+    let board = document.querySelector("canvas")
+    // board.height = 400
+    // board.width = 1000
+
+    board.width = window.innerWidth
+    board.height = window.innerHeight
+
+    let tool = board.getContext("2d") //context for any tool using
+
+
+    let lineTool = document.querySelector(".fa-arrows-alt-h")
+    let rectTool = document.querySelector(".fa-square")
+    let ctool /*current tool*/ = "rectTool"
+
+    rectTool.addEventListener("click", function () {
+        ctool = "rectTool"
+        console.log("Rectangle tool selected");
+    })
+    lineTool.addEventListener("click", function () {
+        ctool = "lineTool"
+        console.log("Pencil tool selected");
+    })
+
+    // tool.fillRect(0, 0, 400, 200)
+    let body = document.querySelector("body")
+    //add event listener on body
+    let xi, xf, yi, yf;
+    // console.log(board.getBoundingClientRect());
+    let boardTop = board.getBoundingClientRect().top
+
+    board.addEventListener("mousedown", function (e) {
+        // console.log("Mouse was pressed");
+        // let xPos = e.clientX
+        // let yPos = e.clientY
+        // console.log(xPos, yPos)
+        xi = e.clientX //x pos on current Window
+        yi = e.clientY /*y pos on current Window*/ - boardTop
+    })
+    board.addEventListener("mouseup", function (e) {
+        // console.log("Mouse was pressed");
+        // let xPos = e.clientX
+        // let yPos = e.clientY
+        // console.log("canvas: ", xPos, yPos)
+        // alert("mouse was lifted")
+        xf = e.clientX //x on the Window
+        yf = e.clientY /*y acc to Window*/ - boardTop
+        if (ctool == "rectTool") {
+            tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
+            console.log("Rectangle Tool");
+        }
+        else if (ctool == "lineTool") {
+            tool.beginPath();
+            tool.moveTo(xi, yi)
+            tool.lineTo(xf, yf)
+            tool.stroke()
+            console.log("Line tool implemented");
+        }
+    })
+</script>
+
+</html>
