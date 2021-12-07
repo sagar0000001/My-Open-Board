@@ -15,22 +15,29 @@
 
         .outer {
             border: 3px solid purple;
-            height: 70px;
+            height: 60px;
+            width: 200px;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
         }
 
-        div {
+        .outer div {
             border: 1px solid green;
-            background-color: lightpink;
-            height: 50px;
+            /* background-color: rgb(255, 182, 193); */
+            height: 40px;
+            width: 40px;
             border-radius: 50%;
         }
 
         .red {
-            height: 50px;
+            background-color: lightpink;
+            /* height: 50px; */
         }
 
         .green {
             background-color: lightgreen;
+            /* width: 50px; */
         }
 
         .blue {
@@ -44,15 +51,50 @@
         body {
             border: 1px solid blue;
         }
+
+        .color-area {
+            margin-top: 30px;
+            margin-left: 30px;
+            height: 150px;
+            width: 150px;
+            /* background-color: lightgrey; */
+            border: 1px solid grey;
+        }
     </style>
 </head>
 
 <body>
     <div class="outer">
-        <div class="red">Orange</div>
-        <div class="green">Green</div>
-        <div class="blue">Blue</div>
+        <div class="red">
+            <!-- Orange -->
+        </div>
+        <div class="green">
+            <!-- Green -->
+        </div>
+        <div class="blue">
+            <!-- Blue -->
+        </div>
     </div>
+
+    <div class="color-area"></div>
 </body>
+<script>
+    let colorArea = document.querySelector(".color-area")
+    // colorArea.style.background = "yellow"
+    let redDiv = document.querySelector(".red")
+    let greenDiv = document.querySelector(".green")
+    let blueDiv = document.querySelector(".blue")
+
+    redDiv.addEventListener("click", function () {
+        colorArea.style.background = "lightpink"
+    })
+    greenDiv.addEventListener("click", function () {
+        colorArea.style.backgroundColor = "lightgreen"
+    })
+    blueDiv.addEventListener("click", function (e) {
+        colorArea.style.backgroundColor = "lightblue"
+    })
+
+</script>
 
 </html>

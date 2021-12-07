@@ -11,8 +11,21 @@
 </head>
 
 <body>
-    <i class="far fa-square tool"></i>
-    <i class="fas fa-arrows-alt-h tool"></i>
+    <div class="icon-pallet">
+
+        <i class="far fa-square tool"></i>
+        <i class="fas fa-arrows-alt-h tool"></i>
+        <div class="red">
+            <!-- Orange -->
+        </div>
+        <div class="green">
+            <!-- Green -->
+        </div>
+        <div class="blue">
+            <!-- Blue -->
+        </div>
+
+    </div>
     <!-- <h1>Canvas</h1> -->
     <canvas></canvas>
 </body>
@@ -40,6 +53,21 @@
         console.log("Pencil tool selected");
     })
 
+    let redDiv = document.querySelector(".red")
+    let greenDiv = document.querySelector(".green")
+    let blueDiv = document.querySelector(".blue")
+
+
+    redDiv.addEventListener("click", function () {
+        tool.strokeStyle = "lightpink"
+    })
+    greenDiv.addEventListener("click", function () {
+        tool.strokeStyle = "lightgreen"
+    })
+    blueDiv.addEventListener("click", function (e) {
+        tool.strokeStyle = "lightblue"
+    })
+
     // tool.fillRect(0, 0, 400, 200)
     let body = document.querySelector("body")
     //add event listener on body
@@ -63,6 +91,7 @@
         // alert("mouse was lifted")
         xf = e.clientX //x on the Window
         yf = e.clientY /*y acc to Window*/ - boardTop
+
         if (ctool == "rectTool") {
             tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
             console.log("Rectangle Tool");
