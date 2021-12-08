@@ -84,7 +84,7 @@
 
     let xi, xf, yi, yf;
     let boardTop = board.getBoundingClientRect().top
-    let drawingMode = false
+    let drawingMode = true
 
 
     board.width = window.innerWidth
@@ -150,16 +150,15 @@
         // console.log(xPos, yPos)
         xi = e.clientX //x pos on current Window
         yi = e.clientY /*y pos on current Window*/ - boardTop
+
         tool.strokeStyle = cColor;
-        if (cTool == "pencil") {
-            drawingMode = true
+        if (cTool == "pencil" || cTool == "eraser" || cTool == "line") {
+            if (cTool == "eraser") tool.strokeStyle = "white"
+
             tool.beginPath()
             tool.moveTo(e.clientX, e.clientY - boardTop)
         }
-        else if (cTool == "line") {
-            tool.beginPath()
-            tool.moveTo(e.clientX, e.clientY - boardTop)
-        }
+
 
     })
     let txi = xi
@@ -181,7 +180,7 @@
         // alert("mouse was lifted")
         xf = e.clientX //x on the Window
         yf = e.clientY /*y acc to Window*/ - boardTop
-        drawingMode = false
+        // drawingMode = false
         mousedown = false
 
         if (cTool == "rect") {
@@ -215,6 +214,8 @@
         pencil.style.boxShadow = "0px 0px 12px #888888"
     })
     eraser.addEventListener("click", function (e) {
+        drawingMode = true;
+
         if (cTool == "eraser") options[1].style.display = "flex";
         else {
             for (let i = 0; i < options.length; i++) {
