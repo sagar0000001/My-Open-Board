@@ -1,44 +1,98 @@
-/* * {
-    margin: 0;
-    padding: 0;
-} */
-body {
-    margin: 0;
+.ficon {
+    font-size: 2rem;
+}
+/* my styling */
+.toolbar {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    width: 80vw;
+    height: 50px;
+    justify-content: center;
+    margin: 0 auto;
+    /* to align(this container) horizontally */
 }
 
 .tool {
-    font-size: 2rem;
-    margin: 0 30px;
+    /* border: 1px solid green; */
+    height: 40px;
+    width: 40px;
+    margin: auto 20px;
+    border-radius: 50%;
+    /* border: 1px solid lightgrey; */
 }
 
-/* color pallet */
-.icon-pallet {
-    background-color: lightgrey;
-    margin-left: 30px;
-    height:50px;
-    display: flex;    
-    justify-content: space-evenly;
+.tool-img {
+    height: 30px;
+    display: block;
+    /* to align center */
+    margin: 0 auto;
+}
+
+.color-container {
+    display: flex;
     align-items: center;
+    justify-content: space-evenly;
+    border: 1px solid lightgrey;
+    height: 40px;
+    width: 150px;
+    margin: auto 10px;
+    /* to align(this container) vertically */
 }
 
-.icon-pallet div {
-    border: 1px solid green;
-    /* background-color: rgb(255, 182, 193); */
+.color {
     height: 30px;
     width: 30px;
     border-radius: 50%;
+    /* margin: 0 20px; */
 }
 
 .red {
     background-color: lightpink;
-    /* height: 50px; */
-}
-
-.green {
-    background-color: lightgreen;
-    /* width: 50px; */
 }
 
 .blue {
     background-color: lightblue;
+}
+
+.green {
+    background-color: lightgreen;
+}
+
+
+/* SIZES */
+.size-box {
+    width: 140px;
+    height: 35px;
+    border: 1px solid lightgrey;
+    align-items: center;
+    justify-content: space-evenly;
+    /* display: flex; */
+    display: none;
+}
+
+.size {
+    background-color: lightsteelblue;
+    border-radius: 50%;
+}
+
+.size1 {
+    width: 10px;
+    height: 10px;
+}
+
+.size2 {
+    width: 14px;
+    height: 14px;
+}
+
+.size3 {
+    width: 18px;
+    height: 18px;
+}
+
+.size4 {
+    width: 22px;
+    height: 22px;
 }

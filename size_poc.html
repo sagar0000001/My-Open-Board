@@ -65,7 +65,6 @@
     /* variables only */
     let board = document.querySelector("canvas")
     let tool = board.getContext("2d") //context for any tool using
-
     // let lineTool = document.querySelector(".fa-arrows-alt-h")
     // let rectTool = document.querySelector(".fa-square")
     // let ctool /*current tool*/ = "rectTool"
@@ -77,20 +76,14 @@
     let eraser = document.querySelector("#eraser");
     let rect = document.querySelector("#rect");
     let line = document.querySelector("#line");
-    let mousedown = false;
     let cTool = "pencil";
-    let cColor = "lightpink";
     let options = document.querySelectorAll(".size-box");
 
     let xi, xf, yi, yf;
     let boardTop = board.getBoundingClientRect().top
     let drawingMode = false
-
-
     board.width = window.innerWidth
     board.height = window.innerHeight
-    pencil.style.boxShadow = "0px 0px 12px #888888"
-
     // board.height = 400
     // board.width = 1000
 
@@ -100,10 +93,11 @@
 <!-- Methods -->
 <script>
     /* method only */
+    pencil.style.boxShadow = "0px 0px 12px #888888"
+
 
     redDiv.addEventListener("click", function () {
-        cColor = "lightpink";
-        tool.strokeStyle = cColor
+        tool.strokeStyle = "lightpink"
 
         blueDiv.style.border = "none"
         blueDiv.style.boxShadow = "none"
@@ -114,8 +108,7 @@
         reddiv.style.boxShadow = "0px 0px 8px #888888"
     })
     greenDiv.addEventListener("click", function () {
-        cColor = "lightgreen"
-        tool.strokeStyle = cColor
+        tool.strokeStyle = "lightgreen"
 
         redDiv.style.border = "none"
         redDiv.style.boxShadow = "none"
@@ -126,8 +119,7 @@
         greenDiv.style.boxShadow = "0px 0px 5px #cbcccc"
     })
     blueDiv.addEventListener("click", function (e) {
-        cColor = "lightblue"
-        tool.strokeStyle = cColor
+        tool.strokeStyle = "lightblue"
 
         redDiv.style.border = "none"
         redDiv.style.boxShadow = "none"
@@ -143,14 +135,12 @@
     // console.log(board.getBoundingClientRect()); //properties of board (width, height, starting x, starging y ,etc..)
 
     board.addEventListener("mousedown", function (e) {
-        mousedown = true;
         // console.log("Mouse was pressed");
         // let xPos = e.clientX
         // let yPos = e.clientY
         // console.log(xPos, yPos)
         xi = e.clientX //x pos on current Window
         yi = e.clientY /*y pos on current Window*/ - boardTop
-        tool.strokeStyle = cColor;
         if (cTool == "pencil") {
             drawingMode = true
             tool.beginPath()
@@ -166,7 +156,7 @@
     let tyi = yi
 
     board.addEventListener("mousemove", function (e) {
-        if (drawingMode == false || mousedown == false) { return; }
+        if (drawingMode == false) { return; }
         // console.log(e.clientX, e.clientY - boardTop);
         tool.lineTo(e.clientX, e.clientY - boardTop)
         tool.stroke()
@@ -182,7 +172,6 @@
         xf = e.clientX //x on the Window
         yf = e.clientY /*y acc to Window*/ - boardTop
         drawingMode = false
-        mousedown = false
 
         if (cTool == "rect") {
             tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
@@ -243,7 +232,7 @@
             line.style.boxShadow = "none";
             cTool = "rect";
         }
-        rect.style.boxShadow = "0px 0px 12px #888888"; //rect tool selected
+        rect.style.boxShadow = "0px 0px 12px #888888";
     })
     line.addEventListener("click", function (e) {
         drawingMode = false /* for pencil */
