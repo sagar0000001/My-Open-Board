@@ -9,7 +9,7 @@
 </head>
 <style>
     .size-box {
-        width: 140px;
+        width: 240px;
         height: 35px;
         border: 1px solid lightgrey;
         display: flex;
@@ -45,11 +45,18 @@
 
 <body>
     <div class="size-box">
-        <div class="size size1"></div>
-        <div class="size size2"></div>
-        <div class="size size3"></div>
-        <div class="size size4"></div>
+        <div class="size1 size"></div>
+        <div class="size2 size"></div>
+        <div class="size3 size"></div>
+        <div class="size4 size"></div>
     </div>
 </body>
+
+<script>
+    let sizebox = document.querySelector(".size-box");
+    sizebox.addEventListener("click", function (e) {
+        console.log(e.target.classList[0]); // e.target => child element
+    })
+</script>
 
 </html>
