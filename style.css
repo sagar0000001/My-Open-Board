@@ -63,13 +63,14 @@
 
 /* SIZES */
 .size-box {
+    position: absolute;
     width: 140px;
     height: 35px;
     border: 1px solid lightgrey;
     align-items: center;
     justify-content: space-evenly;
     /* display: flex; */
-    display: none;
+    display: none; /* default */
 }
 
 .size {

@@ -21,8 +21,13 @@ let cColor = "lightpink";
 let options = document.querySelectorAll(".size-box");
 
 let xi, xf, yi, yf;
+let boardLeft = board.getBoundingClientRect().left
 let boardTop = board.getBoundingClientRect().top
 let drawingMode = true
+
+let sizeboxArr = document.querySelectorAll(".size-box");
+let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
+
 
 
 /* --------------------------------Default set-------------------------------- */
@@ -43,6 +48,7 @@ let drawingMode = true
 /* -------------------------------- Event Listeners------------------------------------------------ */
 {
     redDiv.addEventListener("click", function () {
+        console.log("Red color selected");
         cColor = "lightpink";
         tool.strokeStyle = cColor
 
@@ -61,6 +67,7 @@ let drawingMode = true
         redDiv.style.boxShadow = "0px 0px 5px #cbcccc"
     })
     greenDiv.addEventListener("click", function () {
+        console.log("green color selected");
         cColor = "lightgreen"
         tool.strokeStyle = cColor
 
@@ -80,6 +87,7 @@ let drawingMode = true
     })
     // @ts-ignore
     blueDiv.addEventListener("click", function (e) {
+        console.log("blue color selected");
         cColor = "lightblue"
         tool.strokeStyle = cColor
 
@@ -99,20 +107,16 @@ let drawingMode = true
     })
 
 
-
-    // tool.fillRect(0, 0, 400, 200)
-    //add event listener on body
-    // console.log(board.getBoundingClientRect()); //properties of board (width, height, starting x, starging y ,etc..)
-
     board.addEventListener("mousedown", function (e) {
+        console.log("Mouse pressed on canvas board");
         mousedown = true;
-        // console.log("Mouse was pressed");
         // let xPos = e.clientX
         // let yPos = e.clientY
         // console.log(xPos, yPos)
-        xi = e.clientX //x pos on current Window
+        xi = e.clientX /* x pos on current Window */ - boardLeft
         yi = e.clientY /*y pos on current Window*/ - boardTop
 
+        // tool property & begin path
         tool.strokeStyle = cColor;
         if (cTool == "pencil" || cTool == "eraser" || cTool == "line") {
             if (cTool == "eraser") tool.strokeStyle = "white"
@@ -121,48 +125,52 @@ let drawingMode = true
             tool.moveTo(e.clientX, e.clientY - boardTop)
         }
 
+        // make size box not displayed
+        console.log("all size boxes are hide");
+        for (let i = 0; i < options.length; i++) {
+            // @ts-ignore
+            options[i].style.display = "none";
+        }
 
     })
-    let txi = xi
-    let tyi = yi
 
     board.addEventListener("mousemove", function (e) {
         if (drawingMode == false || mousedown == false) { return; }
-        // console.log(e.clientX, e.clientY - boardTop);
-        tool.lineTo(e.clientX, e.clientY - boardTop)
+        console.log(e.clientX, e.clientY - boardTop);
+        tool.lineTo(e.clientX - boardLeft, e.clientY - boardTop)
         tool.stroke()
-        // @ts-ignore
-        txi = e.clientX
-        // @ts-ignore
-        tyi = e.clientY - boardTop
+
+        // txi = e.clientX    //lineTo karne se tool move bhi ho jata hai isliye previous x,y positions nikalne ki jarurat nhi hue
+        // tyi = e.clientY - boardTop
     })
     board.addEventListener("mouseup", function (e) {
-        // console.log("Mouse was pressed");
+        console.log("Mouse is released");
         // let xPos = e.clientX
         // let yPos = e.clientY
         // console.log("canvas: ", xPos, yPos)
         // alert("mouse was lifted")
-        xf = e.clientX //x on the Window
+        xf = e.clientX /* x on the Window */ - boardLeft
         yf = e.clientY /*y acc to Window*/ - boardTop
         // drawingMode = false
         mousedown = false
 
         if (cTool == "rect") {
             tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
-            console.log("Rectangle Tool");
+            // console.log("Rectangle Tool");
         }
         else if (cTool == "line") {
             tool.beginPath();
             tool.moveTo(xi, yi)
             tool.lineTo(xf, yf)
             tool.stroke()
-            console.log("Line tool implemented");
+            // console.log("Line tool implemented");
         }
     })
 
-    // Tool Size Option & its CSS
+    // Tool Stroke & responsive UI
     // @ts-ignore
     pencil.addEventListener("click", function (e) {
+        tool.lineWidth = toolSizes[0] // pencil size , index 0
         drawingMode = true;
 
         // @ts-ignore
@@ -187,7 +195,8 @@ let drawingMode = true
     })
     // @ts-ignore
     eraser.addEventListener("click", function (e) {
-        drawingMode = true;
+        tool.lineWidth = toolSizes[1] //eraser size, index 1
+        drawingMode = true; // like pencil movement
 
         // @ts-ignore
         if (cTool == "eraser") options[1].style.display = "flex";
@@ -211,8 +220,9 @@ let drawingMode = true
     })
     // @ts-ignore
     rect.addEventListener("click", function (e) {
+        tool.lineWidth = toolSizes[2] // rect size at index 2
         drawingMode = false /* for pencil */
-        console.log("Rectangle tool selected");
+        // console.log("Rectangle tool selected"); //consist of tool and sizebox
 
         // @ts-ignore
         if (cTool == "rect") options[2].style.display = "flex";
@@ -236,8 +246,9 @@ let drawingMode = true
     })
     // @ts-ignore
     line.addEventListener("click", function (e) {
+        tool.lineWidth = toolSizes[3] //line's size at index 3
         drawingMode = false /* for pencil */
-        console.log("Pencil tool selected");
+        // console.log("Line tool selected");
 
         // @ts-ignore
         if (cTool == "line") options[3].style.display = "flex";
@@ -259,13 +270,44 @@ let drawingMode = true
         // @ts-ignore
         line.style.boxShadow = "0px 0px 12px #888888";
     })
+
+
+    sizeboxArr.forEach((sizebox, index) => {
+        sizebox.addEventListener("click", function (e) {
+            let childClasses = ["size1", "size2", "size3", "size4"];
+            // @ts-ignore
+            let ele_class = e.target.classList[0] // e.target => child element
+            if (childClasses.includes(ele_class)) {
+                let i = childClasses.indexOf(ele_class);
+                toolSizes[index] = i * 2 + 1
+                if (index == 1) { //eraser
+                    toolSizes[index] = (i + 1) * 4
+                }
+                console.log(index, toolSizes[index]);
+                tool.lineWidth = toolSizes[index]
+            }
+        })
+    });
+
 }
 
 /* -------------------Testing------------------------------------------------ */
 {
-    let sizebox = document.querySelector(".size-box");
-    sizebox.addEventListener("click", function (e) {
-        // @ts-ignore
-        console.log(e.target.classList[0]); // e.target => child element
-    })
+    /* For pencil size-box only */
+    /* // let sizebox = document.querySelector(".size-box");
+    // sizebox.addEventListener("click", function (e) {
+    //     let childClasses = ["size1", "size2", "size3", "size4"];
+    //     // @ts-ignore
+    //     let ele_class = e.target.classList[0] // e.target => child element
+
+    //     if (childClasses.includes(ele_class)) {
+    //         // console.log(ele_class);
+    //         let index = childClasses.indexOf(ele_class);
+
+    //     }
+    // }) */
+
+
+
+
 }
