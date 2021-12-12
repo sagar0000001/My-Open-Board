@@ -17,7 +17,7 @@ let rect = document.querySelector("#rect");
 let line = document.querySelector("#line");
 let mousedown = false;
 let cTool = "pencil";
-let cColor = "lightpink";
+let cColor = "#FF5733";
 let options = document.querySelectorAll(".size-box");
 
 let xi, xf, yi, yf;
@@ -28,7 +28,7 @@ let drawingMode = true
 let sizeboxArr = document.querySelectorAll(".size-box");
 let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
 
-
+let download = document.querySelector("#download");
 
 /* --------------------------------Default set-------------------------------- */
 {
@@ -39,7 +39,15 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
     // @ts-ignore
     redDiv.style.border = "2px solid white"
     // @ts-ignore
-    redDiv.style.boxShadow = "0px 0px 5px #cbcccc"
+    redDiv.style.boxShadow = "0px 0px 12px #888888"
+
+    sizeboxArr.forEach(sizebox => {
+        // console.log(sizebox);
+        // @ts-ignore
+        sizebox.querySelector(".size1").style.border = "1px solid white"
+        // @ts-ignore
+        sizebox.querySelector(".size1").style.boxShadow = "0px 0px 3px orange"
+    })
 
     // board.height = 400
     // board.width = 1000
@@ -47,9 +55,74 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
 
 /* -------------------------------- Event Listeners------------------------------------------------ */
 {
+
+    board.addEventListener("mousedown", function (e) {
+        console.log("Mouse pressed on canvas board");
+        mousedown = true;
+
+        tool.strokeStyle = cColor;
+        xi = e.clientX - boardLeft
+        yi = e.clientY - boardTop
+        beginPath({
+            x: xi,
+            y: yi
+        })
+
+        if (cTool == "eraser") {
+            tool.globalCompositeOperation = "destination-out"
+        }
+
+
+        // make size box not displayed
+        console.log("all size boxes are hide");
+        for (let i = 0; i < options.length; i++) {
+            // @ts-ignore
+            options[i].style.display = "none";
+        }
+
+    })
+
+    board.addEventListener("mousemove", function (e) {
+        if (drawingMode == false || mousedown == false) { return; }         // drawing mode is for pencil & eraser
+
+        if (cTool == "pencil") {
+            drawStroke({
+                x: e.clientX - boardLeft,
+                y: e.clientY - boardTop,
+            })
+        }
+        else if (cTool == "eraser") { // eraser
+            erase(e.clientX - boardLeft, e.clientY - boardTop)
+        }
+
+    })
+    board.addEventListener("mouseup", function (e) {
+        mousedown = false
+        tool.globalCompositeOperation = "source-over"
+        // console.log("Mouse is released");
+
+        xf = e.clientX /* x on the Window */ - boardLeft
+        yf = e.clientY /*y acc to Window*/ - boardTop
+
+        // For Non-drawing-mode tools
+        if (cTool == "line") { //draw line
+            drawStroke({
+                x: xf,
+                y: yf
+            })
+        }
+        else if (cTool == "rect") {
+            tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
+            // console.log("Rectangle Tool");
+        }
+
+    })
+
+
+
     redDiv.addEventListener("click", function () {
         console.log("Red color selected");
-        cColor = "lightpink";
+        cColor = "#FF5733";
         tool.strokeStyle = cColor
 
         // @ts-ignore
@@ -64,11 +137,11 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
         // @ts-ignore
         redDiv.style.border = "2px solid white"
         // @ts-ignore
-        redDiv.style.boxShadow = "0px 0px 5px #cbcccc"
+        redDiv.style.boxShadow = "0px 0px 5px #888888"
     })
     greenDiv.addEventListener("click", function () {
         console.log("green color selected");
-        cColor = "lightgreen"
+        cColor = "#42DE15"
         tool.strokeStyle = cColor
 
         // @ts-ignore
@@ -83,12 +156,12 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
         // @ts-ignore
         greenDiv.style.border = "2px solid white"
         // @ts-ignore
-        greenDiv.style.boxShadow = "0px 0px 5px #cbcccc"
+        greenDiv.style.boxShadow = "0px 0px 5px #888888"
     })
     // @ts-ignore
     blueDiv.addEventListener("click", function (e) {
         console.log("blue color selected");
-        cColor = "lightblue"
+        cColor = "#0096FF"
         tool.strokeStyle = cColor
 
         // @ts-ignore
@@ -103,69 +176,9 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
         // @ts-ignore
         blueDiv.style.border = "2px solid white"
         // @ts-ignore
-        blueDiv.style.boxShadow = "0px 0px 5px #cbcccc"
+        blueDiv.style.boxShadow = "0px 0px 5px #888888"
     })
 
-
-    board.addEventListener("mousedown", function (e) {
-        console.log("Mouse pressed on canvas board");
-        mousedown = true;
-        // let xPos = e.clientX
-        // let yPos = e.clientY
-        // console.log(xPos, yPos)
-        xi = e.clientX /* x pos on current Window */ - boardLeft
-        yi = e.clientY /*y pos on current Window*/ - boardTop
-
-        // tool property & begin path
-        tool.strokeStyle = cColor;
-        if (cTool == "pencil" || cTool == "eraser" || cTool == "line") {
-            if (cTool == "eraser") tool.strokeStyle = "white"
-
-            tool.beginPath()
-            tool.moveTo(e.clientX, e.clientY - boardTop)
-        }
-
-        // make size box not displayed
-        console.log("all size boxes are hide");
-        for (let i = 0; i < options.length; i++) {
-            // @ts-ignore
-            options[i].style.display = "none";
-        }
-
-    })
-
-    board.addEventListener("mousemove", function (e) {
-        if (drawingMode == false || mousedown == false) { return; }
-        console.log(e.clientX, e.clientY - boardTop);
-        tool.lineTo(e.clientX - boardLeft, e.clientY - boardTop)
-        tool.stroke()
-
-        // txi = e.clientX    //lineTo karne se tool move bhi ho jata hai isliye previous x,y positions nikalne ki jarurat nhi hue
-        // tyi = e.clientY - boardTop
-    })
-    board.addEventListener("mouseup", function (e) {
-        console.log("Mouse is released");
-        // let xPos = e.clientX
-        // let yPos = e.clientY
-        // console.log("canvas: ", xPos, yPos)
-        // alert("mouse was lifted")
-        xf = e.clientX /* x on the Window */ - boardLeft
-        yf = e.clientY /*y acc to Window*/ - boardTop
-        // drawingMode = false
-        mousedown = false
-
-        if (cTool == "rect") {
-            tool.strokeRect(xi, yi, xf - xi, yf - yi) //x direction=> , y direction⇓
-            // console.log("Rectangle Tool");
-        }
-        else if (cTool == "line") {
-            tool.beginPath();
-            tool.moveTo(xi, yi)
-            tool.lineTo(xf, yf)
-            tool.stroke()
-            // console.log("Line tool implemented");
-        }
-    })
 
     // Tool Stroke & responsive UI
     // @ts-ignore
@@ -271,6 +284,13 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
         line.style.boxShadow = "0px 0px 12px #888888";
     })
 
+    download.addEventListener("click", function (e) {
+        let url = board.toDataURL() // create url for the pixels on canvas
+        let a = document.createElement("a")
+        a.href = url
+        a.download = "drawing.png"
+        a.click()
+    })
 
     sizeboxArr.forEach((sizebox, index) => {
         sizebox.addEventListener("click", function (e) {
@@ -283,11 +303,49 @@ let toolSizes = [1, 4, 1, 1] //pencilSize, eraserSize, rectSize, lineSize
                 if (index == 1) { //eraser
                     toolSizes[index] = (i + 1) * 4
                 }
-                console.log(index, toolSizes[index]);
                 tool.lineWidth = toolSizes[index]
+                // console.log(index, toolSizes[index]);
+
+
+                // make other sizedivs styles none
+                sizebox.querySelectorAll(".size").forEach(sizeDiv => {
+                    // @ts-ignore
+                    sizeDiv.style.border = "none"
+                    // @ts-ignore
+                    sizeDiv.style.boxShadow = "none";
+                })
+
+                // @ts-ignore
+                sizebox.querySelector(`.size${i + 1}`).style.border = "1px solid white"
+                // @ts-ignore
+                sizebox.querySelector(`.size${i + 1}`).style.boxShadow = "0px 0px 2px 1px orange"
             }
         })
     });
+
+}
+
+
+
+/* --------------------------------------Functions ---------------------------------------------------- */
+{
+    function beginPath(strokeObj) {
+        tool.beginPath()
+        tool.moveTo(strokeObj.x, strokeObj.y)
+    }
+
+    function drawStroke(strokeObj) {
+        tool.lineTo(strokeObj.x, strokeObj.y)
+        tool.stroke()
+    }
+
+    // eraser's
+    function erase(x, y) {
+        tool.beginPath();
+        tool.moveTo(x, y);
+        tool.arc(x, y, toolSizes[1], 0, Math.PI * 2, false);
+        tool.fill();
+    };
 
 }
 
